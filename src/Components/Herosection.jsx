@@ -8,7 +8,6 @@ import thumbnail from '../assets/thumbnail.jpeg';
 import thumbnailVideo from '../assets/thumbnailVideo.mp4';
 import card1 from "../assets/Card-1.jpeg";
 import card2 from '../assets/Card-2.jpeg';
-import card3 from '../assets/Card-3.jpeg';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import ProductList from './Product_list';
@@ -50,7 +49,7 @@ const HeroSection = () => {
   const categories = [
     { title: "MEN'S PERFUME", image: card1, link: '/men' },
     { title: "WOMEN'S PERFUME", image: card2, link: '/women' },
-    { title: "UNISEX PERFUME", image: card3, link: '/fragrance' },
+    { title: "UNISEX PERFUME", image: '/Images/card-3.jpeg', link: '/fragrance' },
   ];
   const boards = [
     {
