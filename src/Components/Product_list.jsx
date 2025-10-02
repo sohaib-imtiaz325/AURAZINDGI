@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Star, Box, ArrowUpRight } from "lucide-react"; // <-- FIXED
 
 const products = [
   {
@@ -58,78 +58,9 @@ const products = [
   },
 ];
 
-const ProductCard = ({ product }) => {
-  const [isZoomed, setIsZoomed] = useState(false);
-
-  const handleTouch = () => {
-    if (window.innerWidth < 768) {
-      setIsZoomed(true);
-      setTimeout(() => setIsZoomed(false), 1500);
-    }
-  };
-
-  return (
-    <div className="group relative w-full rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white">
-      <div
-        className={`relative w-full aspect-[2/3] sm:aspect-[3/4] h-[22rem] overflow-hidden transition-transform duration-300 ${isZoomed ? "scale-105" : ""
-          } group-hover:scale-105`}
-        onTouchStart={handleTouch}
-      >
-        {/* Wishlist Button */}
-        <div className="absolute top-3 left-3 z-10">
-          <button className="bg-white p-2 rounded-full shadow hover:bg-red-100 transition duration-200">
-            <Heart className="w-5 h-5 text-red-500" />
-          </button>
-        </div>
-
-        {/* Main Image */}
-        <img
-          src={product.image}
-          alt={product.title}
-          className="absolute top-0 left-0 w-full h-full object-cover opacity-100 group-hover:opacity-0 transition-opacity duration-[1200ms] ease-in-out"
-        />
-
-        {/* Hover Image */}
-        <img
-          src={product.hoverImage}
-          alt={`${product.title} Hover`}
-          className="absolute top-0 left-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 scale-100 group-hover:scale-105 transform-gpu will-change-transform transition-all duration-[1200ms] ease-in-out"
-        />
-      </div>
-
-      {/* Title + Category + Price + Rating */}
-      <div className="relative flex flex-col h-[12rem] px-4 pt-4 pb-16">
-        <div className="flex items-start justify-between">
-          <h2 className="text-base font-semibold text-gray-800 line-clamp-1">
-            {product.title}
-          </h2>
-          <span className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full uppercase font-medium tracking-wide">
-            {product.category}
-          </span>
-        </div>
-
-        <div className="mt-3 px-2 flex items-center justify-between w-full">
-          <p className="text-green-600 font-bold text-sm">{product.price}</p>
-          <div className="flex items-center gap-1 text-yellow-500 text-sm font-medium">
-            <span>⭐</span>
-            <span>{product.rating}</span>
-          </div>
-        </div>
-
-        {/* Add to Cart Button fixed at bottom */}
-        <div className="absolute bottom-0 left-0 w-full flex justify-center px-4">
-          <button className="w-[30%] bg-black text-white rounded-full py-2 text-sm font-medium hover:bg-gray-800 transition duration-300">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [visibleCount, setVisibleCount] = useState(3); // sirf 3 products
+  const [visibleCount, setVisibleCount] = useState(4);
 
   const filteredProducts =
     selectedCategory === "All" || selectedCategory === "Top Seller"
@@ -151,7 +82,7 @@ const ProductList = () => {
           value={selectedCategory}
           onChange={(e) => {
             setSelectedCategory(e.target.value);
-            setVisibleCount(3);
+            setVisibleCount(4);
           }}
           className="px-4 py-2 text-sm border border-gray-300 rounded-full shadow-sm bg-white hover:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 transition duration-300"
         >
@@ -164,9 +95,48 @@ const ProductList = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {visibleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        {visibleProducts.map((p) => (
+          <div
+            key={p.id}
+            className="relative bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+          >
+            {/* Product Image */}
+            <img
+              src={p.image}
+              alt={p.title}
+              className="w-full h-[280px] sm:h-[350px] md:h-[400px] object-cover"
+            />
+
+            {/* Transparent Rating */}
+            <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex items-center text-xs sm:text-sm text-white bg-black/40 rounded-full px-1.5 sm:px-2 py-0.5">
+              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 mr-1" />
+              {p.rating}
+            </div>
+
+            {/* Name + Price */}
+            <div className="absolute top-12 sm:top-14 left-2 sm:left-3 text-white drop-shadow max-w-[80%]">
+              <h3 className="font-medium text-sm sm:text-base leading-tight">
+                {p.title}
+              </h3>
+              <p className="text-base sm:text-lg font-semibold">{p.price}</p>
+            </div>
+
+            {/* Bottom Right Combined Button */}
+            <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 flex">
+              <button className="flex overflow-hidden rounded-full shadow">
+                {/* Box (White Side) */}
+                <span className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-white hover:bg-gray-100">
+                  <Box className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                </span>
+
+                {/* Arrow (Black Side) */}
+                <span className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-black text-white hover:bg-gray-800">
+                  <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                </span>
+              </button>
+            </div>
+          </div>
         ))}
       </div>
     </div>

@@ -1,172 +1,251 @@
-import React, { useState } from "react";
-import CustomerReviewSection from "./CustomerReviews";
+import { useState } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Minus,
+  Plus,
+  ChevronDown,
+} from "lucide-react";
 
 const ProductDetail = () => {
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState("100 ml"); // default
   const [quantity, setQuantity] = useState(1);
-  const productImages = ["https://cdn.pixabay.com/photo/2019/04/06/19/22/glass-4108085_1280.jpg", "https://cdn.pixabay.com/photo/2019/04/06/19/22/glass-4108085_1280.jpg", "https://cdn.pixabay.com/photo/2019/04/06/19/22/glass-4108085_1280.jpg", "https://cdn.pixabay.com/photo/2019/04/06/19/22/glass-4108085_1280.jpg"];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const mainImage = productImages[currentIndex];
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
+  const [shippingOpen, setShippingOpen] = useState(false);
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const images = ["/Images/p2.jpg", "/Images/p3.jpg", "/Images/p2.jpg", "/Images/p3.jpg"];
 
+  const sizes = ["50 ml", "100 ml"];
 
-
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? productImages.length - 1 : prevIndex - 1
-    );
+  // Price mapping by size
+  const priceMap = {
+    "50 ml": 1500,
+    "100 ml": 2500,
   };
 
+  const handlePrevImage = () => {
+    setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = () => {
+    setSelectedImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const decrementQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  // Final price calculation
+  const totalPrice = priceMap[selectedSize] * quantity;
+
   return (
-    <div className="min-h-screen  p-4 md:p-8 lg:p-12 font-sans text-gray-800">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start bg-white rounded-3xl p-6 md:p-8 ">
-         
-          <div className="flex flex-col items-center space-y-6">
-          
-            <div className="relative w-full max-w-md aspect-square bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
-              <img
-                key={mainImage}
-                src={mainImage}
-                alt="Main Product"
-                className="w-full h-full object-contain p-4 transition-all duration-300 hover:scale-105"
-              />
+    <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        {/* Left Section - Images */}
+        <div className="flex flex-col-reverse lg:flex-row gap-4">
+          {/* Thumbnail Gallery */}
+          <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
+            {images.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImage(index)}
+                className={`flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border-2 rounded-lg overflow-hidden transition-all ${
+                  selectedImage === index ? "border-black" : "border-gray-200"
+                }`}
+              >
+                <img
+                  src={img}
+                  alt={`Product ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
 
-        
-           
-           
+          {/* Main Image */}
+          <div className="relative flex-1 bg-gradient-to-br from-indigo-200 to-indigo-300 rounded-lg overflow-hidden min-h-[400px] lg:min-h-[600px]">
+            <img
+              src={images[selectedImage]}
+              alt="Product"
+              className="w-full h-full object-cover"
+            />
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={handlePrevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 text-gray-800" />
+            </button>
+            <button
+              onClick={handleNextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 text-gray-800" />
+            </button>
+          </div>
+        </div>
+
+        {/* Right Section - Product Info */}
+        <div className="flex flex-col">
+          {/* Title and Rating */}
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Nike ACG "Wolf Tree" Polartec
+            </h1>
+            <div className="flex items-center gap-1 text-sm text-gray-600 flex-shrink-0">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span>50</span>
             </div>
+          </div>
 
-            <div className="flex gap-3 justify-center w-full overflow-x-auto py-2 px-1">
-              {productImages.map((img, index) => (
+          {/* Price */}
+          <div className="mb-4 -mt-2">
+            <p className="text-2xl font-semibold text-gray-900">
+              PKR {totalPrice}
+            </p>
+          </div>
+
+          {/* Size Selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Select Size
+            </label>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              {sizes.map((size) => (
                 <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all duration-200 ${
-                    currentIndex === index 
-                      ? "ring-2 ring-gold scale-105 shadow-md" 
-                      : "opacity-80 hover:opacity-100 hover:scale-105"
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`py-3 px-4 border rounded-lg text-sm font-medium transition-all ${
+                    selectedSize === size
+                      ? "border-gray-900 bg-gray-900 text-white"
+                      : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
                   }`}
                 >
-                  <img
-                    src={img}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                  {size}
                 </button>
               ))}
             </div>
           </div>
 
-         
-          <div className="space-y-6">
-            
-            <div className="border-b border-gray-200 pb-4">
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">STARLIGHT</h1>
-              <p className="text-2xl text-gold font-semibold mb-2">Rs. 4,990.00</p>
-              <p className="text-sm text-gray-500">SKU: 000000FRL083</p>
-            </div>
-
-            
-            <div className="flex items-center gap-4 py-4">
-              <div className="flex items-center border border-gray-300 rounded-full px-3 py-1">
-                <button
-                  onClick={decreaseQuantity}
-                  className="text-gray-600 hover:text-gold w-6 h-6 flex items-center justify-center transition"
-                >
-                  −
-                </button>
-                <span className="mx-4 text-lg font-medium">{quantity}</span>
-                <button
-                  onClick={increaseQuantity}
-                  className="text-gray-600 hover:text-gold w-6 h-6 flex items-center justify-center transition"
-                >
-                  +
-                </button>
-              </div>
-              <button className="flex-1 bg-black text-gold hover:bg-gold hover:text-black transition-colors duration-300 font-medium py-3 px-6 rounded-full shadow-md hover:shadow-lg">
-                ADD TO BAG
+          {/* Quantity Selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Quantity
+            </label>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={decrementQuantity}
+                className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="text-lg font-medium w-12 text-center">
+                {quantity.toString().padStart(2, "0")}
+              </span>
+              <button
+                onClick={incrementQuantity}
+                className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
               </button>
             </div>
+          </div>
 
-            
-            <div className="space-y-5 text-sm leading-relaxed text-gray-700">
-              <div className="space-y-3">
-                <h2 className="text-lg font-semibold text-gray-900 border-b pb-2">PRODUCT DETAILS</h2>
-                <p>For a refreshing floral statement, immerse yourself in our Starlight Sapphire scent.</p>
+          {/* Action Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <button className="py-4 px-6 border-2 border-gray-900 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+              Add to cart
+            </button>
+            <button className="py-4 px-6 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
+              Buy it now
+            </button>
+          </div>
+
+          {/* Extra 2 Images */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <img
+              src="/Images/p2.jpg"
+              alt="Extra Product 1"
+              className="w-full h-48 object-cover rounded-lg"
+            />
+            <img
+              src="/Images/p3.jpg"
+              alt="Extra Product 2"
+              className="w-full h-48 object-cover rounded-lg"
+            />
+          </div>
+
+          {/* Extra Add to Cart Button */}
+          <div className="mb-6">
+            <button className="w-full py-4 px-6 border-2 border-gray-900 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+              Add to cart
+            </button>
+          </div>
+
+          {/* Product Description */}
+          <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+            Celebrate the power and simplicity of the Swoosh. This warm brushed
+            fleece hoodie is made with some extra room through the shoulder.
+          </p>
+
+          {/* Collapsible Sections */}
+          <div className="border-t border-gray-200">
+            <button
+              onClick={() => setDescriptionOpen(!descriptionOpen)}
+              className="w-full py-4 flex items-center justify-between text-left"
+            >
+              <span className="font-medium text-gray-900">Description</span>
+              <ChevronDown
+                className={`w-5 h-5 text-gray-600 transition-transform ${
+                  descriptionOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {descriptionOpen && (
+              <div className="pb-4 text-sm text-gray-600 leading-relaxed">
+                <p>
+                  The Nike ACG "Wolf Tree" Polartec hoodie combines style and
+                  functionality. Made with premium Polartec fleece, this hoodie
+                  provides exceptional warmth and comfort. Features include a
+                  full-zip closure, adjustable hood, and side pockets for
+                  convenience.
+                </p>
               </div>
+            )}
+          </div>
 
-              <div className="space-y-3">
-                <h3 className="font-medium text-gray-900">Composition:</h3>
-                <ul className="space-y-2 ml-1">
-                  <li className="flex">
-                    <span className="text-gold mr-2">•</span>
-                    <span><strong className="text-gray-900">Top Notes:</strong> Citrus, Floral, Fruity</span>
-                  </li>
-                  <li className="flex">
-                    <span className="text-gold mr-2">•</span>
-                    <span><strong className="text-gray-900">Middle Notes:</strong> Floral, Woody</span>
-                  </li>
-                  <li className="flex">
-                    <span className="text-gold mr-2">•</span>
-                    <span><strong className="text-gray-900">Base Notes:</strong> Ambery, Floral, Sweet</span>
-                  </li>
-                </ul>
+          <div className="border-t border-gray-200">
+            <button
+              onClick={() => setShippingOpen(!shippingOpen)}
+              className="w-full py-4 flex items-center justify-between text-left"
+            >
+              <span className="font-medium text-gray-900">
+                Shipping & Returns
+              </span>
+              <ChevronDown
+                className={`w-5 h-5 text-gray-600 transition-transform ${
+                  shippingOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {shippingOpen && (
+              <div className="pb-4 text-sm text-gray-600 leading-relaxed">
+                <p className="mb-2">
+                  <strong>Shipping:</strong> Free standard shipping on orders
+                  over $50. Express shipping available at checkout.
+                </p>
+                <p>
+                  <strong>Returns:</strong> 30-day return policy. Items must be
+                  unworn and in original packaging.
+                </p>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-medium text-gray-900">Type:</h3>
-                  <p>Floral</p>
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">Size:</h3>
-                  <p>75 ml</p>
-                </div>
-              </div>
-            </div>
-
-            
-           <div className="pt-4">
-  <h3 className="text-sm font-medium text-gray-900 mb-2">SHARE THIS PRODUCT</h3>
-  <div className="flex gap-3">
-  <a 
-    href={`https://wa.me/?text=${encodeURIComponent(window.location.href)}`} 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center hover:bg-green-600 transition"
-  >
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 32 32" 
-      fill="currentColor" 
-      className="w-6 h-6"
-    >
-      <path d="M16.003 2.667c-7.364 0-13.333 5.97-13.333 13.333 0 2.353.618 4.647 1.79 6.667l-1.892 6.93 7.096-1.867a13.253 13.253 0 006.34 1.603h.001c7.364 0 13.333-5.969 13.333-13.333 0-3.552-1.383-6.895-3.897-9.407A13.2 13.2 0 0016.003 2.667zm.023 23.99a11.298 11.298 0 01-5.794-1.607l-.417-.247-4.21 1.11 1.122-4.105-.27-.43a11.297 11.297 0 01-1.75-6.017c0-6.222 5.068-11.29 11.29-11.29a11.213 11.213 0 017.999 3.316 11.222 11.222 0 013.292 7.975c0 6.222-5.067 11.29-11.29 11.29zm6.19-8.471c-.341-.17-2.018-1-2.33-1.113-.311-.114-.538-.17-.765.17-.228.34-.878 1.113-1.077 1.341-.198.227-.396.256-.737.085s-1.439-.529-2.74-1.688c-1.013-.903-1.697-2.017-1.896-2.356-.198-.34-.021-.522.15-.692.154-.153.34-.398.512-.597.17-.199.227-.34.34-.568.114-.227.057-.426-.028-.597-.085-.17-.765-1.842-1.05-2.527-.276-.664-.558-.574-.765-.585-.198-.01-.426-.012-.654-.012s-.597.085-.911.426c-.313.34-1.196 1.17-1.196 2.85 0 1.68 1.225 3.301 1.396 3.531.17.227 2.408 3.681 5.838 5.162.816.353 1.45.563 1.947.72.817.26 1.56.223 2.146.136.654-.098 2.018-.825 2.305-1.621.284-.797.284-1.48.199-1.621-.085-.14-.312-.228-.654-.398z"/>
-    </svg>
-  </a>
-</div>
-
-</div>
-
+            )}
           </div>
         </div>
       </div>
-
-     
-      <style jsx>{`
-        .text-gold {
-          color: #d4af37;
-        }
-        .bg-gold {
-          background-color: #d4af37;
-        }
-        .ring-gold {
-          --tw-ring-color: #d4af37;
-        }
-      `}</style>
-      <CustomerReviewSection/>
     </div>
   );
 };

@@ -1,20 +1,23 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './Components/Home';
-import Herosection from './Components/Herosection';
+import Combine from './Components/Combine';
+import Womens from './Components/Women';
+import Mens from './Components/Men';
 import ProductDetail from './Components/ProductDetail';
-import FragrancePage from './Components/Women'; // Women page
-import Mensperfums from './Components/Mensperfume';
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Herosection />} />
-        <Route path="/product" element={<ProductDetail />} />
-        <Route path="/WOMEN" element={<FragrancePage />} />
-        <Route path="/Man" element={<Mensperfums />} />
-        <Route path="/ProductDetail" element={<ProductDetail />} />
+        {/* Home Page */}
+        <Route path="/" element={<Combine />} />
+
+        {/* Category Pages */}
+        <Route path="/women" element={<Womens />} />
+        <Route path="/man" element={<Mens />} />
+
+        {/* Product Detail (shared by both Women & Men) */}
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
     </BrowserRouter>
   );

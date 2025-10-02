@@ -8,9 +8,10 @@ import {
   Box,
   ArrowUpRight,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const products = [
-  { id: 1, name: "ARTISTIC FLUID MODERN CHAIR", price: "$52.99", rating: 4.2, image: "/Images/p2.jpg" },
+export const menProducts = [
+  { id: 1, name: "ARTISTIC FLUID MODERN CHAIR", price: "PKR2500", rating: 4.2, image: "/Images/p2.jpg" },
   { id: 2, name: "FUTURISTIC BLACK LEATHER SEAT CHAIR", price: "$70.99", rating: 4.4, image: "/Images/p2.jpg" },
   { id: 3, name: "MODERN MARBLED CURVE CHAIR", price: "$90.99", rating: 4.8, image: "/Images/p2.jpg" },
   { id: 4, name: "ARTISTIC WOOD TEXTURED CHAIR", price: "$104.99", rating: 4.6, image: "/Images/p2.jpg" },
@@ -20,14 +21,16 @@ const products = [
   { id: 8, name: "ARTISTIC WOOD TEXTURED CHAIR", price: "$104.99", rating: 4.6, image: "/Images/p2.jpg" },
 ];
 
-export default function Womens() {
+export default function Mens() {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-gray-50 min-h-screen flex justify-center py-6 px-3 sm:py-10 sm:px-6">
       <div className="w-full max-w-7xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
-            <h2 className="text-lg sm:text-xl font-semibold">Top Selling Women Items</h2>
+            <h2 className="text-lg sm:text-xl font-semibold">Top Selling Men Items</h2>
             <p className="text-gray-500 text-xs sm:text-sm">230 Products</p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -48,10 +51,11 @@ export default function Womens() {
 
         {/* Product Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {products.map((p) => (
+          {menProducts.map((p) => (
             <div
               key={p.id}
-              className="relative bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+              onClick={() => navigate(`/product/${p.id}`)} // ✅ navigate on click
+              className="relative bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
             >
               {/* Product Image */}
               <img
