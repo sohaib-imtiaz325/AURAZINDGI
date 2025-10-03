@@ -22,12 +22,12 @@ const products = [
 
 export default function Womens() {
   return (
-    <div className="bg-gray-50 min-h-screen flex justify-center py-6 px-3 sm:py-10 sm:px-6">
-      <div className="w-full max-w-7xl">
+    <div className="bg-gray-100 min-h-screen flex justify-center py-6 px-3 sm:py-10 sm:px-6">
+      <div className="w-full max-w-7xl rounded-[3%] bg-white p-[10px]">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div>
-            <h2 className="text-lg sm:text-xl font-semibold">Top Selling Women Items</h2>
+          <div className="ml-6 mt-4">
+            <h2 className="text-lg  sm:text-xl font-semibold">Top Selling Women Items</h2>
             <p className="text-gray-500 text-xs sm:text-sm">230 Products</p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -47,21 +47,21 @@ export default function Womens() {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2  rounded-4xl p-8  md:grid-cols-4 gap-4 px-3 sm:gap-4">
           {products.map((p) => (
             <div
               key={p.id}
-              className="relative bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+              className="relative bg-white rounded-2xl sm:rounded-4xl  shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl"
             >
               {/* Product Image */}
               <img
                 src={p.image}
                 alt={p.name}
-                className="w-full h-[280px] sm:h-[350px] md:h-[450px] object-cover"
+                className="w-full h-[250px] sm:h-[320px] md:h-[420px] object-cover"
               />
 
               {/* Transparent Rating */}
-              <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex items-center text-xs sm:text-sm text-white bg-black/40 rounded-full px-1.5 sm:px-2 py-0.5">
+              <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex items-center text-xs sm:text-sm text-white px-1.5 sm:px-2 py-0.5">
                 <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 mr-1" />
                 {p.rating}
               </div>
@@ -69,22 +69,23 @@ export default function Womens() {
               {/* Name + Price */}
               <div className="absolute top-12 sm:top-14 left-2 sm:left-3 text-white drop-shadow max-w-[80%]">
                 <h3 className="font-medium text-sm sm:text-base leading-tight">{p.name}</h3>
-                <p className="text-base sm:text-lg font-semibold">{p.price}</p>
+                <p className="text-base sm:text-lg font-bold">{p.price}</p>
               </div>
 
+
               {/* Bottom Right Combined Button */}
-              <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 flex">
-                <button className="flex overflow-hidden rounded-full shadow">
+              <div className="absolute bottom-2 sm:bottom-3 bg-white rounded-full right-2 sm:right-3 flex">
+                <div className="flex overflow-hidden rounded-full shadow">
                   {/* Box (White Side) */}
-                  <span className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-white hover:bg-gray-100">
-                    <Box className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                  <span className="flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 hover:bg-gray-100">
+                    <Box className="w-6 h-6 text-gray-700" />
                   </span>
 
                   {/* Arrow (Black Side) */}
-                  <span className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-black text-white hover:bg-gray-800">
-                    <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 bg-black text-white hover:bg-gray-800 rounded-full">
+                    <ArrowUpRight className="w-6 h-6" />
                   </span>
-                </button>
+                </div>
               </div>
             </div>
           ))}

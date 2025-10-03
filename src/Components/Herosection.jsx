@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import bannerImg from "../assets/banner.png";
+import bannerImg from "/Images/banner.png";
 import bannerVideo from "../assets/sliderVideo.mp4";
 import thumbnail from "../assets/thumbnail.jpeg";
 import thumbnailVideo from "../assets/thumbnailVideo.mp4";
@@ -19,7 +19,6 @@ const HeroSection = () => {
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
-  // Slider content
   const slides = [
     {
       type: "video",
@@ -44,14 +43,6 @@ const HeroSection = () => {
     },
   ];
 
-  // Categories with links
-  const categories = [
-    { title: "MAN'S PERFUME", image: "/Images/men.jpg", link: "/man" },
-    { title: "WOMEN'S PERFUME", image: "/Images/women.jpg", link: "/women" },
-    { title: "UNISEX PERFUME", image: "/Images/couple pic.jpg", link: "/unisex" },
-  ];
-
-  // Board section
   const boards = [
     {
       type: "image",
@@ -71,7 +62,6 @@ const HeroSection = () => {
     },
   ];
 
-  // Auto slide
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -79,7 +69,6 @@ const HeroSection = () => {
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  // Animate heading/text
   useEffect(() => {
     setAnimationKey((prev) => prev + 1);
     setTimeout(() => {
@@ -87,7 +76,6 @@ const HeroSection = () => {
     }, 50);
   }, [currentSlide]);
 
-  // Touch/drag handling
   const handleTouchStart = (e) => {
     touchStartX.current =
       e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
@@ -122,9 +110,8 @@ const HeroSection = () => {
       <section>
         <Navbar />
         <div
-          className={`relative w-full h-[50vh] sm:h-[60vh] md:h-[75vh] lg:h-[85vh] overflow-hidden bg-gray-900 ${
-            isDragging ? "cursor-grabbing" : "cursor-grab"
-          }`}
+          className={`relative w-full h-[50vh] sm:h-[60vh] md:h-[75vh] lg:h-[85vh] 
+          overflow-hidden ${isDragging ? "cursor-grabbing" : "cursor-grab"} mt-25`}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -191,32 +178,83 @@ const HeroSection = () => {
         </div>
       </section>
 
-      {/* Categories */}
-      <motion.section className="px-4 sm:px-6 py-16 max-w-7xl mx-auto">
+      {/* Categories Section */}
+      <motion.section className="px-4 sm:px-2 pt-16">
         <h2 className="text-3xl sm:text-4xl text-center mb-12 text-gray-900">
           Explore Now
           <span className="block w-24 h-0.5 bg-gray-900 mx-auto mt-2"></span>
         </h2>
 
-        <div className="flex flex-wrap justify-center gap-6">
-          {categories.map(({ title, image, link }, index) => (
-            <motion.div
-              key={title}
-              whileHover={{ scale: 1.05 }}
-              className="rounded-2xl overflow-hidden shadow-lg relative w-80 h-72"
+        <div className="flex   gap-2">
+          {/* MAN'S PERFUME */}
+          <motion.div
+          
+            className="rounded-2xl overflow-hidden  relative"
+          >
+            <Link
+              to="/man"
+              className="block  object-cover object-center bg-center bg-cover"
             >
-              <Link to={link} className="block w-full h-full">
-                <img
-                  src={image}
-                  alt={title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl bg-black/30">
-                  {title}
+              <img
+                src="/Images/men.jpg"
+                alt="MAN'S PERFUME"
+                className="w-150 h-100 object-cover object-center bg-center bg-cover"
+              />
+              {/* Left side vertical rotated text */}
+              <div className="absolute inset-y-0 left-6 bottom-40 flex flex-col justify-center items-center whitespace-nowrap text-white font-bold text-2xl">
+                  
+                    <span
+                      
+                      className="transform rotate-90 origin-left"
+                    >
+                      MAN,S PERFUME
+                    </span>
+                  
                 </div>
-              </Link>
-            </motion.div>
-          ))}
+            </Link>
+          </motion.div>
+
+          {/* WOMAN'S PERFUME */}
+          <motion.div
+          
+            className="rounded-2xl overflow-hidden shadow-lg relative h-100 w-80"
+          >
+            <Link
+              to="/women"
+              className="block  object-cover object-center bg-center bg-cover"
+            >
+              <img
+                src="/Images/women.jpg"
+                alt="WOMAN'S PERFUME"
+                className="w-full h-full object-cover object-center bg-center bg-cover"
+              />
+              {/* Top center text */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 whitespace-nowrap  text-white font-bold text-2xl p-2">
+                WOMAN'S PERFUME 
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* UNISEX PERFUME */}
+          <motion.div
+      
+            className="rounded-2xl overflow-hidden shadow-lg relative h-100 w-80"
+          >
+            <Link
+              to="/unisex"
+              className="block w-full h-full object-cover object-center bg-center bg-cover"
+            >
+              <img
+                src="/Images/couple pic.jpg"
+                alt="UNISEX PERFUME"
+                className="w-full h-full object-cover object-center bg-center bg-cover"
+              />
+              {/* Centered text */}
+              <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl">
+                UNISEX PERFUME
+              </div>
+            </Link>
+          </motion.div>
         </div>
       </motion.section>
 
@@ -251,9 +289,7 @@ const HeroSection = () => {
                     {card.title}
                   </h2>
                 )}
-                {card.text && (
-                  <p className="text-lg text-white mb-4">{card.text}</p>
-                )}
+                {card.text && <p className="text-lg text-white mb-4">{card.text}</p>}
                 {card.button && (
                   <button className="px-6 py-3 bg-white text-black rounded-lg hover:bg-yellow-500 transition">
                     {card.button}
@@ -272,10 +308,14 @@ const HeroSection = () => {
 
       {/* Banner + Footer */}
       <div>
-        <div
-          className="w-full mx-auto h-[40vw] sm:h-[35vw] md:h-[30vw] lg:h-[25vw] min-h-[120px] max-h-[300px] my-20 bg-cover bg-center rounded-lg shadow-lg"
-          style={{ backgroundImage: `url(${bannerImg})` }}
-        ></div>
+        <div className="w-full mx-auto my-10 rounded-lg shadow-lg overflow-hidden">
+          <img
+            src={bannerImg}
+            alt="Banner"
+            className="w-full max-h-[350px] object-contain md:object-cover"
+          />
+        </div>
+
         <Footer />
       </div>
 
