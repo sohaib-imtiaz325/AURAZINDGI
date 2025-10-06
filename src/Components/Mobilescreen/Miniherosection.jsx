@@ -258,7 +258,7 @@ const Miniherosection = () => {
                   />
                   <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
                     {card.title && (
-                      <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+                      <h2 className="text-2xl sm:text-3xl text-amber-400 font-bold mb-2">
                         {card.title}
                       </h2>
                     )}
