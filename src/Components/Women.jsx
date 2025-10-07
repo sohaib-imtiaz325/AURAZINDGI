@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   SlidersHorizontal,
   ArrowUpDown,
-  ArrowLeft,
-  ArrowRight,
   Box,
   ArrowUpRight,
 } from "lucide-react";
@@ -11,7 +9,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 
-const products = [
+const productsData = [
   {
     id: "1",
     name: "ARTISTIC FLUID MODERN CHAIR",
@@ -57,7 +55,28 @@ const products = [
 export default function Womens() {
   const navigate = useNavigate();
 
-  // 👇 Navigate with product data
+  const [sortDropdown, setSortDropdown] = useState(false);
+  const [sortType, setSortType] = useState(""); // "" | "lowToHigh" | "highToLow"
+  const sortRef = useRef(null);
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (sortRef.current && !sortRef.current.contains(e.target)) {
+        setSortDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Sort products
+  const sortedProducts = [...productsData].sort((a, b) => {
+    if (sortType === "lowToHigh") return a.price - b.price;
+    if (sortType === "highToLow") return b.price - a.price;
+    return 0;
+  });
+
   const handleCardClick = (product) => {
     navigate(`/product/${product.id}`, { state: { product } });
   };
@@ -72,30 +91,51 @@ export default function Womens() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div className="ml-6 mt-4">
               <h2 className="text-lg sm:text-xl font-semibold">Top Selling Women Items</h2>
-              <p className="text-gray-500 text-xs sm:text-sm">{products.length} Products</p>
+              <p className="text-gray-500 text-xs sm:text-sm">{productsData.length} Products</p>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap relative">
               <button className="flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white shadow text-gray-700 text-xs sm:text-sm hover:bg-gray-100">
                 <SlidersHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Filter By
               </button>
-              <button className="flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white shadow text-gray-700 text-xs sm:text-sm hover:bg-gray-100">
-                <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Sort By
-              </button>
-              <button className="p-1.5 sm:p-2 rounded-full bg-white shadow hover:bg-gray-100">
-                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </button>
-              <button className="p-1.5 sm:p-2 rounded-full bg-white shadow hover:bg-gray-100">
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </button>
+
+              {/* Sort By */}
+              <div className="relative" ref={sortRef}>
+                <button
+                  onClick={() => setSortDropdown(!sortDropdown)}
+                  className="flex items-center gap-1 mr-5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white shadow text-gray-700 text-xs sm:text-sm hover:bg-gray-100"
+                >
+                  <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Sort By
+                </button>
+
+                {sortDropdown && (
+                  <div className="absolute top-full mt-1 left-0 sm:w-44 sm:right-0 bg-white shadow-lg rounded-md border border-gray-200 z-50">
+                    <ul>
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => { setSortType("lowToHigh"); setSortDropdown(false); }}
+                      >
+                        Price: Low to High
+                      </li>
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => { setSortType("highToLow"); setSortDropdown(false); }}
+                      >
+                        Price: High to Low
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Product Cards Grid */}
           <div className="grid grid-cols-2 rounded-4xl p-8 md:grid-cols-4 gap-4 px-3 sm:gap-4">
-            {products.map((p) => (
+            {sortedProducts.map((p) => (
               <div
                 key={p.id}
-                onClick={() => handleCardClick(p)} // 👈 Pass full product data
+                onClick={() => handleCardClick(p)}
                 className="relative bg-white rounded-2xl sm:rounded-4xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
               >
                 <img

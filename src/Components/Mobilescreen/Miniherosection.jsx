@@ -182,7 +182,7 @@ const Miniherosection = () => {
               whileHover={{ scale: 1.05 }}
               className="rounded-2xl overflow-hidden shadow-lg relative w-full h-72"
             >
-              <Link to="/men" className="block w-full">
+              <Link to="/man" className="block w-full">
                 <img
                   src="/Images/men.jpg"
                   alt="Men"
@@ -277,7 +277,7 @@ const Miniherosection = () => {
         </section>
 
         {/* Products */}
-        <section className="mx-auto px-4">
+        <section className="">
           <ProductList />
         </section>
 

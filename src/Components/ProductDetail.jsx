@@ -23,6 +23,13 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [shippingOpen, setShippingOpen] = useState(false);
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem("cartItems");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // For tasters selection
+  const [selectedTaster, setSelectedTaster] = useState(null);
 
   if (!product) {
     return (
@@ -40,7 +47,7 @@ const ProductDetail = () => {
     "50 ml": basePrice,
     "100 ml": Math.round(basePrice * 1.6),
   };
-  const totalPrice = priceMap[selectedSize] * quantity;
+  const totalPrice = priceMap[selectedSize];
 
   const handlePrevImage = () =>
     setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -51,26 +58,70 @@ const ProductDetail = () => {
   const decrementQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const handleAddToCart = () => setDrawerOpen(true);
+  // Add main product to cart
+  const handleAddToCart = () => {
+    const existingIndex = cartItems.findIndex(
+      (item) => item.id === product.id && item.selectedSize === selectedSize
+    );
 
-  // ✅ Proceed to Checkout
-  const handleProceedToCheckout = () => {
-    navigate("/checkout", {
-      state: {
-        product,
-        selectedImage: images[selectedImage],
-        selectedSize,
-        quantity,
-        totalPrice,
-      },
-    });
+    let updatedCart;
+    if (existingIndex >= 0) {
+      updatedCart = [...cartItems];
+      updatedCart[existingIndex].quantity += quantity;
+      updatedCart[existingIndex].totalPrice =
+        updatedCart[existingIndex].quantity *
+        priceMap[updatedCart[existingIndex].selectedSize];
+    } else {
+      updatedCart = [
+        ...cartItems,
+        {
+          id: product.id,
+          name: product.name,
+          image: images[selectedImage],
+          selectedSize,
+          quantity,
+          basePrice: priceMap[selectedSize],
+          totalPrice: priceMap[selectedSize] * quantity,
+        },
+      ];
+    }
+
+    setCartItems(updatedCart);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    setDrawerOpen(true);
+    setQuantity(1);
   };
+
+  // Update quantity in cart drawer
+  const updateCartItemQuantity = (index, newQty) => {
+    const updatedCart = [...cartItems];
+    updatedCart[index].quantity = newQty;
+    updatedCart[index].totalPrice = newQty * updatedCart[index].basePrice;
+    setCartItems(updatedCart);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  };
+
+  // Remove item from cart drawer
+  const removeCartItem = (index) => {
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedCart);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate("/checkout", { state: { cartItems } });
+  };
+
+  // Taster products
+  const tasters = [
+    { id: "taster1", name: "Taster 1", image: "/Images/p2.jpg", price: 500 },
+    { id: "taster2", name: "Taster 2", image: "/Images/p3.jpg", price: 700 },
+  ];
 
   return (
     <>
       <Navbar />
       <div className="relative">
-        {/* ====== PRODUCT DETAIL CONTENT ====== */}
         <div className="max-w-7xl mx-auto px-4 py-8 mt-24 lg:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* LEFT SECTION */}
@@ -82,8 +133,8 @@ const ProductDetail = () => {
                     key={index}
                     onClick={() => setSelectedImage(index)}
                     className={`flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border-2 overflow-hidden transition-all ${selectedImage === index
-                        ? "border-black"
-                        : "border-gray-200"
+                      ? "border-black"
+                      : "border-gray-200"
                       }`}
                   >
                     <img
@@ -129,14 +180,9 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Price */}
               <div className="mb-6">
                 <p className="text-xl font-semibold text-gray-900">
                   PKR {totalPrice.toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  {product.description ||
-                    "This premium product is designed for comfort and style."}
                 </p>
               </div>
 
@@ -151,8 +197,8 @@ const ProductDetail = () => {
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={`py-2 px-4 border rounded text-sm font-medium transition-all ${selectedSize === size
-                          ? "border-gray-600 bg-gray-900 text-white"
-                          : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
+                        ? "border-gray-600 bg-gray-900 text-white"
+                        : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
                         }`}
                     >
                       {size}
@@ -197,6 +243,70 @@ const ProductDetail = () => {
                   Buy it now
                 </button>
               </div>
+
+              {/* ====== Taster Section ====== */}
+              <div className="max-w-8xl  mx-auto px-4 py-8">
+                <h2 className="text-2xl font-semibold mb-10">Tasters</h2>
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                  {tasters.map((taster) => (
+                    <div
+                      key={taster.id}
+                      className=" p-5 rounded-lg flex flex-col cursor-pointer transition hover:shadow-lg min-h-[350px]"
+                    >
+                      <img
+                        src={taster.image}
+                        alt={taster.name}
+                        className="w-full h-56 object-cover rounded-lg mb-4"
+                      />
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-lg">{taster.name}</span>
+                        <span className="font-semibold text-lg">PKR {taster.price}</span>
+                      </div>
+                      <span className="text-sm text-gray-500 mb-4">5 ml</span>
+
+                      {/* Checkbox */}
+                      <label className="flex items-center gap-2 mt-auto">
+                        <input
+                          type="checkbox"
+                          checked={selectedTaster?.id === taster.id}
+                          onChange={() => {
+                            setSelectedTaster(
+                              selectedTaster?.id === taster.id ? null : taster
+                            );
+                          }}
+                          className="w-5 h-5 accent-gray-900"
+                        />
+                        <span className="text-sm font-medium text-gray-700">Select</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add Selected Taster */}
+                <div className="mb-4">
+                  <button
+                    onClick={() => {
+                      if (!selectedTaster) return alert("Please select a taster!");
+                      const tasterItem = {
+                        ...selectedTaster,
+                        selectedSize: "5 ml",
+                        quantity: 1,
+                        basePrice: selectedTaster.price,
+                        totalPrice: selectedTaster.price,
+                      };
+                      const updatedCart = [...cartItems, tasterItem];
+                      setCartItems(updatedCart);
+                      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+                      setDrawerOpen(true);
+                      setSelectedTaster(null);
+                    }}
+                    className="w-full py-3 bg-gray-900 text-white font-medium hover:bg-gray-800 transition"
+                  >
+                    Add Selected Taster to Cart
+                  </button>
+                </div>
+              </div>
+
 
               {/* Description */}
               <div className="border-t border-gray-200 mt-6">
@@ -248,15 +358,12 @@ const ProductDetail = () => {
         {/* ====== CART DRAWER ====== */}
         {drawerOpen && (
           <>
-            {/* Background Overlay */}
             <div
               className="fixed inset-0 bg-black/40 z-40"
               onClick={() => setDrawerOpen(false)}
             ></div>
 
-            {/* Drawer Panel Cart page  */}
             <div className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-2xl z-50 transform transition-transform duration-300 translate-x-0 flex flex-col">
-              {/* Header */}
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-lg font-semibold">Your Cart</h2>
                 <button onClick={() => setDrawerOpen(false)}>
@@ -264,67 +371,83 @@ const ProductDetail = () => {
                 </button>
               </div>
 
-              {/* Cart Content */}
               <div className="p-6 flex-grow overflow-y-auto">
-                <div className="flex items-center gap-4 mb-6">
-                  <img
-                    src={images[selectedImage]}
-                    alt={product.name}
-                    className="w-20 h-20 object-cover rounded-md"
-                  />
-                  <div>
-                    <h3 className="text-md font-semibold">{product.name}</h3>
-                    <p className="text-sm text-gray-600">{selectedSize}</p>
-                    {/* ✅ Quantity Counter Below ML */}
-                    <div className="border border-gray-200 w-20 flex items-center mr- mx-auto">
-                      <button
-                        onClick={decrementQuantity}
-                        className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="text-lg font-medium w-10 text-center">
-                        {quantity.toString().padStart(2, "0")}
-                      </span>
-                      <button
-                        onClick={incrementQuantity}
-                        className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </button>
+                {cartItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="relative flex items-center gap-4 mb-6 p-2 rounded-md"
+                  >
+                    <button
+                      onClick={() => removeCartItem(index)}
+                      className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-600 hover:text-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-20 h-20 object-cover rounded-md"
+                    />
+                    <div className="flex-1">
+                      <h3 className="text-md font-semibold">{item.name}</h3>
+                      <p className="text-sm text-gray-600">{item.selectedSize}</p>
+
+                      <div className="border border-gray-200 w-20 flex items-center mt-1">
+                        <button
+                          onClick={() =>
+                            updateCartItemQuantity(
+                              index,
+                              Math.max(1, item.quantity - 1)
+                            )
+                          }
+                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="text-lg font-medium w-10 text-center">
+                          {item.quantity.toString().padStart(2, "0")}
+                        </span>
+                        <button
+                          onClick={() =>
+                            updateCartItemQuantity(index, item.quantity + 1)
+                          }
+                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+
+                      <p className="font-semibold mt-1">
+                        PKR {item.totalPrice.toLocaleString()}
+                      </p>
                     </div>
-                    <p className="font-semibold mt-1">
-                      PKR {totalPrice.toLocaleString()}
-                    </p>
                   </div>
-                </div>
-
-
+                ))}
               </div>
 
-              {/* ✅ Total + Checkout (Bottom Fixed) */}
               <div className="w-full bg-white shadow-inner p-6 border-t border-gray-200">
                 <div className="flex justify-between text-gray-700 font-medium">
                   <span>Total</span>
-                  <span>PKR {totalPrice.toLocaleString()}</span>
+                  <span>
+                    PKR{" "}
+                    {cartItems
+                      .reduce((sum, item) => sum + item.totalPrice, 0)
+                      .toLocaleString()}
+                  </span>
                 </div>
                 <button
-                  onClick={() =>
-                    navigate("/checkout", { state: { product: { ...product, totalPrice } } })
-                  }
+                  onClick={handleProceedToCheckout}
                   className="w-full bg-black text-white py-3 font-medium hover:bg-gray-800 transition mt-4"
                 >
                   Proceed to Checkout
                 </button>
-
               </div>
             </div>
-            
           </>
         )}
-
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

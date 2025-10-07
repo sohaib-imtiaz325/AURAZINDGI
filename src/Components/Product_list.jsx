@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Star, Box, ArrowUpRight, SlidersHorizontal, ArrowUpDown, ArrowLeft, ArrowRight } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Star, Box, ArrowUpRight, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 
 const products = [
   { id: 1, image: "/Images/p2.jpg", title: "Leather Watch", category: "For Him", price: "Rs 1,500", rating: 4.5 },
@@ -12,59 +12,88 @@ const products = [
 
 const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [sortType, setSortType] = useState(""); // "" | "lowToHigh" | "highToLow"
 
+  const filterRef = useRef(null);
+  const sortRef = useRef(null);
+
+  // Close dropdowns if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFilterDropdown(false);
+      }
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setShowSortDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Filter products by category
   const filteredProducts =
     selectedCategory === "All"
       ? products
       : products.filter((p) => p.category === selectedCategory);
 
-  const visibleProducts = filteredProducts.slice(0, 4);
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = Number(a.price.replace(/[^0-9]/g, ""));
+    const priceB = Number(b.price.replace(/[^0-9]/g, ""));
+    if (sortType === "lowToHigh") return priceA - priceB;
+    if (sortType === "highToLow") return priceB - priceA;
+    return 0;
+  });
+
+  const visibleProducts = sortedProducts.slice(0, 4);
 
   return (
-    <div className="   flex justify-center py-6 px-3  sm:py-6 sm:px-6">
-      <div className="w-full h-full  rounded-4xl bg-gray-100 ">
-        {/* Header + Filter/Sort/Arrows */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center  mb-8 gap-4">
+    <div className="flex justify-center px-0 md:px-2 sm:py-6 sm:px-6">
+      <div className="w-full h-full rounded-2xl md:rounded-4xl bg-gray-100 ">
+        {/* Header + Filter/Sort */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h2 className="text-lg sm:text-xl ml-6 mt-2 font-semibold">New Arrival</h2>
             <p className="text-gray-500 text-xs ml-6 sm:text-sm">{filteredProducts.length} Products</p>
           </div>
 
-          <div className="flex items-center gap-2  sm:gap-3 flex-wrap relative">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap relative overflow-visible">
             {/* Filter Button */}
-            <div className="relative">
+            <div className="relative" ref={filterRef}>
               <button
-                onClick={() => setShowDropdown(!showDropdown)}
+                onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-full ml-5 bg-white shadow text-gray-700 text-xs sm:text-sm hover:bg-gray-100"
               >
                 <SlidersHorizontal className="w-4 h-4" /> Filter
               </button>
 
-              {/* Dropdown */}
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border border-gray-200 z-50">
+              {/* Filter Dropdown */}
+              {showFilterDropdown && (
+                <div className="absolute top-full mt-1 left-0 right-0 sm:w-40 sm:right-0 bg-white shadow-lg rounded-md border border-gray-200 z-50">
                   <ul>
                     <li
-                      onClick={() => { setSelectedCategory("All"); setShowDropdown(false); }}
+                      onClick={() => { setSelectedCategory("All"); setShowFilterDropdown(false); }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     >
                       All
                     </li>
                     <li
-                      onClick={() => { setSelectedCategory("For Him"); setShowDropdown(false); }}
+                      onClick={() => { setSelectedCategory("For Him"); setShowFilterDropdown(false); }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     >
                       Men
                     </li>
                     <li
-                      onClick={() => { setSelectedCategory("For Her"); setShowDropdown(false); }}
+                      onClick={() => { setSelectedCategory("For Her"); setShowFilterDropdown(false); }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     >
                       Women
                     </li>
                     <li
-                      onClick={() => { setSelectedCategory("Unisex"); setShowDropdown(false); }}
+                      onClick={() => { setSelectedCategory("Unisex"); setShowFilterDropdown(false); }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     >
                       Unisex
@@ -75,27 +104,41 @@ const ProductList = () => {
             </div>
 
             {/* Sort By Button */}
-            <button className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white shadow text-gray-700 text-xs sm:text-sm hover:bg-gray-100">
-              <ArrowUpDown className="w-4 h-4" /> Sort By
-            </button>
+            <div className="relative" ref={sortRef}>
+              <button
+                onClick={() => setShowSortDropdown(!showSortDropdown)}
+                className="flex items-center gap-1 px-3 py-1.5 mr-5 rounded-full bg-white shadow text-gray-700 text-xs sm:text-sm hover:bg-gray-100"
+              >
+                <ArrowUpDown className="w-4 h-4" /> Sort By
+              </button>
 
-            {/* Left Arrow */}
-            <button className="p-1.5 rounded-full bg-white shadow hover:bg-gray-100">
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-
-            {/* Right Arrow */}
-            <button className="p-1.5 rounded-full mr-2 bg-white shadow hover:bg-gray-100">
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              {/* Sort Dropdown */}
+              {showSortDropdown && (
+                <div className="absolute top-full mt-1 left-0 right-0 sm:w-44 sm:right-0 bg-white shadow-lg rounded-md border border-gray-200 z-50">
+                  <ul>
+                    <li
+                      onClick={() => { setSortType("lowToHigh"); setShowSortDropdown(false); }}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      Price: Low to High
+                    </li>
+                    <li
+                      onClick={() => { setSortType("highToLow"); setShowSortDropdown(false); }}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      Price: High to Low
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-3 pb-4 sm:gap-4">
           {visibleProducts.map((p) => (
-            <div key={p.id} className="relative bg-white rounded-4xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+            <div key={p.id} className="relative bg-white rounded-3xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
               <img src={p.image} alt={p.title} className="w-full h-[240px] sm:h-[300px] md:h-[380px] object-cover" />
 
               {/* Rating */}
@@ -103,7 +146,6 @@ const ProductList = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
                   <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
                 </svg> {p.rating}
-
               </div>
 
               {/* Name + Price */}

@@ -1,14 +1,19 @@
+// src/Components/Navbar.jsx
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaUser, FaShoppingBag } from "react-icons/fa";
 import { FiMenu, FiX, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import MiniNavbar from "./Mobilescreen/MiniNavbar";
+import CartDrawer from "./CartDrawer"; // ✅ Import your existing CartDrawer
 
 const Navbar = () => {
   const [isTop, setIsTop] = useState(true);
   const [showSearch, setShowSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [showCart, setShowCart] = useState(false); // ✅ control CartDrawer visibility
+  const navigate = useNavigate();
 
   // Scroll shadow effect
   useEffect(() => {
@@ -19,7 +24,30 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Mobile menu animation (LEFT SLIDE)
+  // Update cart count from localStorage
+  useEffect(() => {
+    const updateCartCount = () => {
+      const saved = localStorage.getItem("cartItems");
+      if (saved) {
+        const items = JSON.parse(saved);
+        const totalQty = items.reduce((sum, item) => sum + item.quantity, 0);
+        setCartCount(totalQty);
+      } else {
+        setCartCount(0);
+      }
+    };
+    updateCartCount();
+    window.addEventListener("storage", updateCartCount);
+    return () => window.removeEventListener("storage", updateCartCount);
+  }, []);
+
+  const navLinks = [
+    { name: "WOMAN", path: "/women" },
+    { name: "MAN", path: "/man" },
+    { name: "UNISEX", path: "/unisex" },
+    { name: "SPECIAL OFFERS", path: "/offers" },
+  ];
+
   const mobileMenuVariants = {
     hidden: { x: "-100%", opacity: 0 },
     visible: {
@@ -34,20 +62,13 @@ const Navbar = () => {
     visible: { opacity: 1, x: 0, transition: { duration: 0.2 } },
   };
 
-  const navLinks = [
-    { name: "WOMAN", path: "/women" },
-    { name: "MAN", path: "/man" },
-    { name: "UNISEX", path: "/unisex" },
-    { name: "SPECIAL OFFERS", path: "/offers" },
-  ];
-
   return (
     <header
       className={`w-full fixed top-0 left-0 z-50 transition-all duration-500 ${
         isTop ? "bg-black" : "bg-black shadow-md"
       }`}
     >
-      {/* 🔹 Top row */}
+      {/* 🔹 Top Row */}
       <div className="flex items-center justify-between p-3 lg:px-8 text-white relative">
         {/* Left area */}
         <div className="flex items-center gap-3">
@@ -102,21 +123,26 @@ const Navbar = () => {
           </button>
 
           {/* Profile */}
-          <Link
-            to="/profile"
+          <button
+            onClick={() => navigate("/login")}
             className="inline-flex p-2 rounded-md"
             aria-label="Profile"
           >
             <FaUser />
-          </Link>
+          </button>
 
-          {/* Cart */}
-          <Link to="/cart" className="relative p-2 rounded-md" aria-label="Cart">
+          {/* ✅ Cart Drawer Trigger */}
+         <Link to="/Cart">
+          <button
+            onClick={() => setShowCart(true)}
+            className="relative p-2 rounded-md"
+            aria-label="Cart"
+          >
             <FaShoppingBag />
             <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              0
+              {cartCount}
             </span>
-          </Link>
+          </button></Link>
         </div>
       </div>
 
@@ -166,11 +192,10 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* 🔹 Mobile menu (LEFT SLIDE) with cross fixed LEFT */}
+      {/* 🔹 Mobile menu (LEFT SLIDE) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Background Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
@@ -187,7 +212,6 @@ const Navbar = () => {
               className="lg:hidden fixed top-0 left-0 h-full w-[75%] max-w-xs bg-black text-white flex flex-col px-4 py-6 z-50 shadow-lg"
               aria-label="Mobile menu"
             >
-              {/* 🔹 Fixed Cross Button (Top-Left) */}
               <button
                 aria-label="Close menu"
                 onClick={() => setMobileMenuOpen(false)}
@@ -196,7 +220,6 @@ const Navbar = () => {
                 <FiX size={22} />
               </button>
 
-              {/* Menu Items */}
               <motion.ul className="w-full mt-14">
                 {navLinks.map((link) => (
                   <motion.li
@@ -225,7 +248,14 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* 🔹 Mobile Mini Navbar only */}
+      {/* ✅ Cart Drawer Component */}
+      <AnimatePresence>
+        {showCart && (
+          <CartDrawer onClose={() => setShowCart(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* 🔹 Mobile Mini Navbar */}
       <div className="lg:hidden">
         <MiniNavbar />
       </div>

@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 // --------------------- CARD PAYMENT FORM ---------------------
 function CheckoutForm({ total, discount }) {
@@ -158,13 +157,6 @@ function CODForm({ subtotal, shipping, codCharges, discount }) {
 
 // --------------------- MAIN CHECKOUT PAGE ---------------------
 export default function CheckoutPage() {
-  const { state } = useLocation();
-  const product = state?.product || {}; // ✅ data from previous page
-  const subtotal = product.totalPrice || 0;
-  const shipping = 500; // ✅ Fixed shipping charge
-  const codCharges = 250;
-  const discount = subtotal * 0.05; // ✅ 5% discount
-
   const [paymentMethod, setPaymentMethod] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -173,6 +165,17 @@ export default function CheckoutPage() {
   const [streetname, setStreetname] = useState("");
   const [postalcode, setPostalcode] = useState("");
   const formRef = useRef(null);
+
+  // ✅ Load cart items from localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem("cartItems");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+  const discount = subtotal * 0.05;
+  const shipping = 500;
+  const codCharges = 250;
 
   const total =
     paymentMethod === "COD"
@@ -205,48 +208,12 @@ export default function CheckoutPage() {
                   Customer Information
                 </label>
                 <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-                  <input
-                    className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none"
-                    type="text"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <input
-                    className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none"
-                    type="text"
-                    placeholder="Enter phone number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  <input
-                    className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <input
-                    className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none"
-                    type="text"
-                    placeholder="Enter your city"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
-                  <input
-                    className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none"
-                    type="text"
-                    placeholder="Enter your street name or number"
-                    value={streetname}
-                    onChange={(e) => setStreetname(e.target.value)}
-                  />
-                  <input
-                    className="w-full px-4 py-3 text-sm outline-none"
-                    type="text"
-                    placeholder="Enter postal code"
-                    value={postalcode}
-                    onChange={(e) => setPostalcode(e.target.value)}
-                  />
+                  <input className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none" type="text" placeholder="Enter your name" value={name} onChange={(e)=>setName(e.target.value)} />
+                  <input className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none" type="text" placeholder="Enter phone number" value={phone} onChange={(e)=>setPhone(e.target.value)} />
+                  <input className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none" type="email" placeholder="Enter your email" value={email} onChange={(e)=>setEmail(e.target.value)} />
+                  <input className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none" type="text" placeholder="Enter your city" value={city} onChange={(e)=>setCity(e.target.value)} />
+                  <input className="w-full border-b border-gray-200 px-4 py-3 text-sm outline-none" type="text" placeholder="Enter your street name or number" value={streetname} onChange={(e)=>setStreetname(e.target.value)} />
+                  <input className="w-full px-4 py-3 text-sm outline-none" type="text" placeholder="Enter postal code" value={postalcode} onChange={(e)=>setPostalcode(e.target.value)} />
                 </div>
 
                 {/* PAYMENT OPTIONS */}
@@ -255,21 +222,13 @@ export default function CheckoutPage() {
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    className={`h-16  border-2 font-medium flex items-center justify-center ${
-                      paymentMethod === "e-Transfer"
-                        ? "border-blue-600 bg-blue-50 text-blue-600"
-                        : "border-gray-100 bg-white text-gray-600"
-                    }`}
+                    className={`h-16 border-2 font-medium flex items-center justify-center ${paymentMethod === "e-Transfer" ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 bg-white text-gray-600"}`}
                     onClick={() => setPaymentMethod("e-Transfer")}
                   >
                     Bank Transfer
                   </button>
                   <button
-                    className={`h-16  border-2 font-medium flex items-center justify-center ${
-                      paymentMethod === "COD"
-                        ? "border-blue-600 bg-blue-50 text-blue-600"
-                        : "border-gray-100 bg-white text-gray-600"
-                    }`}
+                    className={`h-16 border-2 font-medium flex items-center justify-center ${paymentMethod === "COD" ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 bg-white text-gray-600"}`}
                     onClick={() => setPaymentMethod("COD")}
                   >
                     Cash on Delivery
@@ -278,79 +237,67 @@ export default function CheckoutPage() {
 
                 {paymentMethod && (
                   <div ref={formRef} className="mt-6">
-                    {paymentMethod === "e-Transfer" && (
-                      <CheckoutForm total={total} discount={discount} />
-                    )}
-                    {paymentMethod === "COD" && (
-                      <CODForm
-                        subtotal={subtotal}
-                        shipping={shipping}
-                        codCharges={codCharges}
-                        discount={discount}
-                      />
-                    )}
+                    {paymentMethod === "e-Transfer" && <CheckoutForm total={total} discount={discount} />}
+                    {paymentMethod === "COD" && <CODForm subtotal={subtotal} shipping={shipping} codCharges={codCharges} discount={discount} />}
                   </div>
                 )}
               </div>
 
               {/* RIGHT SUMMARY */}
               <div className="w-full md:w-5/12 p-6 md:p-8 bg-gray-50">
-                <div className="bg-blue-50  p-6 h-full border border-blue-50">
+                <div className="bg-blue-50 p-6 h-full border border-blue-50">
                   <div className="text-center mt-4">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-28 h-28 mx-auto object-cover rounded-lg mb-4"
-                    />
-                    <p className="font-bold text-gray-800">{product.name}</p>
-                    <p className="text-gray-500 text-xs mb-2">
-                      Quantity: {product.quantity || 1}
-                    </p>
-                    <h2 className="font-bold text-3xl text-blue-600 mb-1">
-                      ₨{total.toLocaleString()}
-                    </h2>
-                    <p className="text-gray-500 text-xs">Secure Payment 🔒</p>
+                    <p className="font-bold text-gray-800 mb-2 text-lg">Order Summary</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {cartItems.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-md" />
+                          <div className="text-left">
+                            <p className="text-gray-700 text-sm">{item.name}</p>
+                            <p className="text-gray-500 text-xs">{item.selectedSize} x {item.quantity}</p>
+                          </div>
+                        </div>
+                        <p className="text-gray-800 text-sm">₨{item.totalPrice.toLocaleString()}</p>
+                      </div>
+                    ))}
                   </div>
 
                   <hr className="border-gray-200 my-4" />
 
-                  <p className="text-gray-500 text-xs mb-3">Order Summary</p>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>{product.name}</span>
+                    <span>Subtotal</span>
                     <span>{subtotal.toLocaleString()} PKR</span>
                   </div>
-
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
-                    <span>Shipping </span>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Shipping</span>
                     <span>{shipping.toLocaleString()} PKR</span>
                   </div>
-
-                  <div className="flex justify-between text-sm text-green-600 mb-1">
-                    <span>Discount (5%)</span>
-                    <span>-{discount.toLocaleString()} PKR</span>
-                  </div>
-
                   {paymentMethod === "COD" && (
-                    <div className="flex justify-between text-sm text-red-600 mb-1">
+                    <div className="flex justify-between text-sm mb-1 text-red-600">
                       <span>COD Charges</span>
                       <span>{codCharges.toLocaleString()} PKR</span>
                     </div>
                   )}
+                  <div className="flex justify-between text-sm mb-1 text-green-600">
+                    <span>Discount (5%)</span>
+                    <span>-{discount.toLocaleString()} PKR</span>
+                  </div>
 
                   <hr className="border-gray-200 my-4" />
 
-                  <div className="flex justify-between font-bold">
+                  <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-blue-600">
-                      {total.toLocaleString()} PKR
-                    </span>
+                    <span className="text-blue-600">{total.toLocaleString()} PKR</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
   );
 }
