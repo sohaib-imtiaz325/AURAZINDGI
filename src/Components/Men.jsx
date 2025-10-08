@@ -15,7 +15,7 @@ const productsData = [
     name: "ARTISTIC FLUID MODERN CHAIR",
     price: 5299,
     rating: 4.2,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-1.webp",
     description: "A beautifully designed modern chair perfect for living rooms or offices.",
   },
   {
@@ -23,7 +23,7 @@ const productsData = [
     name: "FUTURISTIC BLACK LEATHER SEAT CHAIR",
     price: 7099,
     rating: 4.4,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-2.webp",
     description: "Luxury black leather chair offering comfort and durability.",
   },
   {
@@ -31,7 +31,7 @@ const productsData = [
     name: "MODERN MARBLED CURVE CHAIR",
     price: 9099,
     rating: 4.8,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-2.webp",
     description: "Elegant marbled finish chair with a smooth curved back design.",
   },
   {
@@ -39,7 +39,7 @@ const productsData = [
     name: "ARTISTIC WOOD TEXTURED CHAIR",
     price: 10499,
     rating: 4.6,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-1.webp",
     description: "Premium wooden chair with an artistic texture for a timeless appeal.",
   },
   {
@@ -47,7 +47,7 @@ const productsData = [
     name: "CLASSIC LINEN ARMCHAIR",
     price: 8299,
     rating: 4.3,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-1.webp",
     description: "A soft, elegant armchair crafted from fine linen fabric.",
   },
 ];

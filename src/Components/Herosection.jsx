@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import bannerImg from "/Images/banner.png";
+import bannerImg from "/Images/banner .webp";
 import bannerVideo from "../assets/sliderVideo.mp4";
 import thumbnail from "../assets/thumbnail.jpeg";
 import thumbnailVideo from "../assets/thumbnailVideo.mp4";
@@ -196,7 +196,7 @@ const HeroSection = () => {
               className="block  object-cover object-center bg-center bg-cover"
             >
               <img
-                src="/Images/men.jpg"
+                src="/Images/manpic.webp"
                 alt="MAN'S PERFUME"
                 className="w-150 h-100 object-cover object-center bg-center bg-cover"
               />
@@ -224,7 +224,7 @@ const HeroSection = () => {
               className="block  object-cover object-center bg-center bg-cover"
             >
               <img
-                src="/Images/women.jpg"
+                src="/Images/womanpic.jpeg"
                 alt="WOMAN'S PERFUME"
                 className="w-full h-full object-cover object-center bg-center bg-cover"
               />
@@ -245,7 +245,7 @@ const HeroSection = () => {
               className="block w-full h-full object-cover object-center bg-center bg-cover"
             >
               <img
-                src="/Images/couple pic.jpg"
+                src="/Images/couplepic.webp"
                 alt="UNISEX PERFUME"
                 className="w-full h-full object-cover object-center bg-center bg-cover"
               />

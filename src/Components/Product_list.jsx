@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { Star, Box, ArrowUpRight, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 
 const products = [
-  { id: 1, image: "/Images/p2.jpg", title: "Leather Watch", category: "For Him", price: "Rs 1,500", rating: 4.5 },
-  { id: 2, image: "/Images/p2.jpg", title: "Handbag", category: "For Her", price: "Rs 2,200", rating: 5 },
-  { id: 3, image: "/Images/p2.jpg", title: "Perfume", category: "Unisex", price: "Rs 999", rating: 4 },
-  { id: 4, image: "/Images/p2.jpg", title: "Wallet", category: "For Him", price: "Rs 750", rating: 4.2 },
-  { id: 5, image: "/Images/p2.jpg", title: "Sunglasses", category: "For Her", price: "Rs 1,250", rating: 4.8 },
-  { id: 6, image: "/Images/p2.jpg", title: "Necklace", category: "Unisex", price: "Rs 1,800", rating: 5 },
+  { id: 1, image: "/Images/Card-1.webp", title: "Leather Watch", category: "For Him", price: "Rs 1,500", rating: 4.5 },
+  { id: 2, image: "/Images/Card-2.webp", title: "Handbag", category: "For Her", price: "Rs 2,200", rating: 5 },
+  { id: 3, image: "/Images/card-3.webp", title: "Perfume", category: "Unisex", price: "Rs 999", rating: 4 },
+  { id: 4, image: "/Images/WhatsApp Image 2025-07-08 at 11.12.23 PM.webp", title: "Wallet", category: "For Him", price: "Rs 750", rating: 4.2 },
+  { id: 5, image: "/Images/WhatsApp Image 2025-07-08 at 11.13.28 PM.webp", title: "Sunglasses", category: "For Her", price: "Rs 1,250", rating: 4.8 },
+  { id: 6, image: "/Images/WhatsApp Image 2025-07-08 at 11.13.39 PM.webp", title: "Necklace", category: "Unisex", price: "Rs 1,800", rating: 5 },
 ];
 
 const ProductList = () => {

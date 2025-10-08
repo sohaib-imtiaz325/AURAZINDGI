@@ -184,7 +184,7 @@ const Miniherosection = () => {
             >
               <Link to="/man" className="block w-full">
                 <img
-                  src="/Images/men.jpg"
+                  src="/Images/manpic.webp"
                   alt="Men"
                   className="w-full h-full object-cover"
                 />
@@ -209,7 +209,7 @@ const Miniherosection = () => {
               >
                 <Link to="/women">
                   <img
-                    src="/Images/women.jpg"
+                    src="/Images/womanpic.jpeg"
                     alt="Women"
                     className="w-full h-full object-cover"
                   />
@@ -225,7 +225,7 @@ const Miniherosection = () => {
               >
                 <Link to="/unisex">
                   <img
-                    src="/Images/couple pic.jpg"
+                    src="/Images/couplepic.webp"
                     alt="Unisex"
                     className="w-full h-full object-cover"
                   />

@@ -15,7 +15,7 @@ const specialProducts = [
     name: "MODERN SALE CHAIR",
     price: 4999,
     rating: 4.2,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-1.webp",
     description: "Stylish chair on special offer, perfect for any room.",
   },
   {
@@ -23,7 +23,7 @@ const specialProducts = [
     name: "DISCOUNT UNISEX SEAT",
     price: 5999,
     rating: 4.5,
-    image: "/Images/p2.jpg",
+    image: "/Images/WhatsApp Image 2025-07-08 at 11.13.28 PM.webp",
     description: "Comfortable unisex seat on discount for a limited time.",
   },
   {
@@ -31,7 +31,7 @@ const specialProducts = [
     name: "OFFER ARMCHAIR",
     price: 7499,
     rating: 4.6,
-    image: "/Images/p2.jpg",
+    image: "/Images/WhatsApp Image 2025-07-08 at 11.13.39 PM.webp",
     description: "Elegant armchair available at a special price.",
   },
   {
@@ -39,7 +39,7 @@ const specialProducts = [
     name: "SALE LOUNGE CHAIR",
     price: 8499,
     rating: 4.7,
-    image: "/Images/p2.jpg",
+    image: "/Images/WhatsApp Image 2025-07-08 at 11.13.28 PM.webp",
     description: "Soft lounge chair now available on special offer.",
   },
   {
@@ -47,7 +47,7 @@ const specialProducts = [
     name: "LIMITED EDITION CHAIR",
     price: 9999,
     rating: 4.8,
-    image: "/Images/p2.jpg",
+    image: "/Images/WhatsApp Image 2025-07-08 at 11.13.39 PM.webp",
     description: "Limited edition chair at a special discounted price.",
   },
 ];

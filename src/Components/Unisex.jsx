@@ -15,7 +15,7 @@ const productsData = [
     name: "MODERN UNISEX CHAIR",
     price: 6499,
     rating: 4.3,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-1.webp",
     description: "Stylish chair suitable for both men and women, with modern design.",
   },
   {
@@ -23,7 +23,7 @@ const productsData = [
     name: "CLASSIC UNISEX SEAT",
     price: 7599,
     rating: 4.5,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-2.webp",
     description: "Comfortable unisex seat with elegant design for any interior.",
   },
   {
@@ -31,7 +31,7 @@ const productsData = [
     name: "ELEGANT UNISEX ARMCHAIR",
     price: 8999,
     rating: 4.7,
-    image: "/Images/p2.jpg",
+    image: "/Images/card-3.webp",
     description: "Elegant armchair that fits perfectly in modern homes for everyone.",
   },
   {
@@ -39,7 +39,7 @@ const productsData = [
     name: "FUTURISTIC UNISEX CHAIR",
     price: 9999,
     rating: 4.6,
-    image: "/Images/p2.jpg",
+    image: "/Images/Card-2.webp",
     description: "Futuristic unisex chair combining style and comfort.",
   },
   {
@@ -47,7 +47,7 @@ const productsData = [
     name: "CREAM UNISEX LOUNGE CHAIR",
     price: 8499,
     rating: 4.4,
-    image: "/Images/p2.jpg",
+    image: "/Images/card-3.webp",
     description: "Soft cream lounge chair suitable for all genders with premium comfort.",
   },
 ];
