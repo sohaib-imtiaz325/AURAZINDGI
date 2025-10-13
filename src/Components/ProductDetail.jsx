@@ -6,18 +6,19 @@ import {
   Minus,
   Plus,
   ChevronDown,
-  X,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import CartDrawer from "./pages/NewCart";
 
 const ProductDetail = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const product = state?.product;
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showCartDrawer, setShowCartDrawer] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("50 ml");
   const [quantity, setQuantity] = useState(1);
@@ -88,35 +89,59 @@ const ProductDetail = () => {
 
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    setDrawerOpen(true);
+    
+    // Dispatch custom event for cart update
+    window.dispatchEvent(new Event("cartUpdated"));
+    
+    setShowCartDrawer(true);
     setQuantity(1);
   };
 
-  // Update quantity in cart drawer
-  const updateCartItemQuantity = (index, newQty) => {
-    const updatedCart = [...cartItems];
-    updatedCart[index].quantity = newQty;
-    updatedCart[index].totalPrice = newQty * updatedCart[index].basePrice;
-    setCartItems(updatedCart);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-  };
-
-  // Remove item from cart drawer
-  const removeCartItem = (index) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(updatedCart);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-  };
-
-  const handleProceedToCheckout = () => {
-    navigate("/checkout", { state: { cartItems } });
+  // Buy it now handler
+  const handleBuyNow = () => {
+    const item = {
+      id: product.id,
+      name: product.name,
+      image: images[selectedImage],
+      selectedSize,
+      quantity,
+      basePrice: priceMap[selectedSize],
+      totalPrice: priceMap[selectedSize] * quantity,
+    };
+    navigate("/checkout", { state: { cartItems: [item] } });
   };
 
   // Taster products
   const tasters = [
-    { id: "taster1", name: "Taster 1", image: "/Images/p2.jpg", price: 500 },
-    { id: "taster2", name: "Taster 2", image: "/Images/p3.jpg", price: 700 },
+    { id: "taster1", name: "Taster 1", image: "/Images/WhatsApp Image 2025-07-08 at 11.12.23 PM.webp", price: 500 },
+    { id: "taster2", name: "Taster 2", image: "/Images/WhatsApp Image 2025-07-08 at 11.13.39 PM.webp", price: 700 },
   ];
+
+  // Add selected taster to cart
+  const handleAddTasterToCart = () => {
+    if (!selectedTaster) {
+      alert("Please select a taster!");
+      return;
+    }
+
+    const tasterItem = {
+      ...selectedTaster,
+      selectedSize: "5 ml",
+      quantity: 1,
+      basePrice: selectedTaster.price,
+      totalPrice: selectedTaster.price,
+    };
+
+    const updatedCart = [...cartItems, tasterItem];
+    setCartItems(updatedCart);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    
+    // Dispatch custom event for cart update
+    window.dispatchEvent(new Event("cartUpdated"));
+    
+    setShowCartDrawer(true);
+    setSelectedTaster(null);
+  };
 
   return (
     <>
@@ -132,10 +157,11 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border-2 overflow-hidden transition-all ${selectedImage === index
-                      ? "border-black"
-                      : "border-gray-200"
-                      }`}
+                    className={`flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 border-2 overflow-hidden transition-all ${
+                      selectedImage === index
+                        ? "border-black"
+                        : "border-gray-200"
+                    }`}
                   >
                     <img
                       src={img}
@@ -196,10 +222,11 @@ const ProductDetail = () => {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`py-2 px-4 border rounded text-sm font-medium transition-all ${selectedSize === size
-                        ? "border-gray-600 bg-gray-900 text-white"
-                        : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
-                        }`}
+                      className={`py-2 px-4 border rounded text-sm font-medium transition-all ${
+                        selectedSize === size
+                          ? "border-gray-600 bg-gray-900 text-white"
+                          : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
+                      }`}
                     >
                       {size}
                     </button>
@@ -239,19 +266,22 @@ const ProductDetail = () => {
                 >
                   Add to cart
                 </button>
-                <button className="py-3 px-5 bg-gray-900 text-white font-medium hover:bg-gray-800">
+                <button
+                  onClick={handleBuyNow}
+                  className="py-3 px-5 bg-gray-900 text-white font-medium hover:bg-gray-800"
+                >
                   Buy it now
                 </button>
               </div>
 
-              {/* ====== Taster Section ====== */}
-              <div className="max-w-8xl  mx-auto px-4 py-8">
-                <h2 className="text-2xl font-semibold mb-10">Tasters</h2>
+              {/* ====== Tester Section ====== */}
+              <div className="max-w-8xl mx-auto">
+                <h2 className="text-2xl font-semibold mb-4">Testers</h2>
                 <div className="grid grid-cols-2 gap-6 mb-8">
                   {tasters.map((taster) => (
                     <div
                       key={taster.id}
-                      className=" p-5 rounded-lg flex flex-col cursor-pointer transition hover:shadow-lg min-h-[350px]"
+                      className="p-5 rounded-lg flex flex-col cursor-pointer transition hover:shadow-lg min-h-[350px]"
                     >
                       <img
                         src={taster.image}
@@ -285,28 +315,13 @@ const ProductDetail = () => {
                 {/* Add Selected Taster */}
                 <div className="mb-4">
                   <button
-                    onClick={() => {
-                      if (!selectedTaster) return alert("Please select a taster!");
-                      const tasterItem = {
-                        ...selectedTaster,
-                        selectedSize: "5 ml",
-                        quantity: 1,
-                        basePrice: selectedTaster.price,
-                        totalPrice: selectedTaster.price,
-                      };
-                      const updatedCart = [...cartItems, tasterItem];
-                      setCartItems(updatedCart);
-                      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-                      setDrawerOpen(true);
-                      setSelectedTaster(null);
-                    }}
+                    onClick={handleAddTasterToCart}
                     className="w-full py-3 bg-gray-900 text-white font-medium hover:bg-gray-800 transition"
                   >
                     Add Selected Taster to Cart
                   </button>
                 </div>
               </div>
-
 
               {/* Description */}
               <div className="border-t border-gray-200 mt-6">
@@ -316,8 +331,9 @@ const ProductDetail = () => {
                 >
                   <span className="font-medium text-gray-900">Description</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-gray-600 transition-transform ${descriptionOpen ? "rotate-180" : ""
-                      }`}
+                    className={`w-5 h-5 text-gray-600 transition-transform ${
+                      descriptionOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
                 {descriptionOpen && (
@@ -338,8 +354,9 @@ const ProductDetail = () => {
                     Shipping & Returns
                   </span>
                   <ChevronDown
-                    className={`w-5 h-5 text-gray-600 transition-transform ${shippingOpen ? "rotate-180" : ""
-                      }`}
+                    className={`w-5 h-5 text-gray-600 transition-transform ${
+                      shippingOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
                 {shippingOpen && (
@@ -356,96 +373,11 @@ const ProductDetail = () => {
         </div>
 
         {/* ====== CART DRAWER ====== */}
-        {drawerOpen && (
-          <>
-            <div
-              className="fixed inset-0 bg-black/40 z-40"
-              onClick={() => setDrawerOpen(false)}
-            ></div>
-
-            <div className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-2xl z-50 transform transition-transform duration-300 translate-x-0 flex flex-col">
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-semibold">Your Cart</h2>
-                <button onClick={() => setDrawerOpen(false)}>
-                  <X className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
-
-              <div className="p-6 flex-grow overflow-y-auto">
-                {cartItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative flex items-center gap-4 mb-6 p-2 rounded-md"
-                  >
-                    <button
-                      onClick={() => removeCartItem(index)}
-                      className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-600 hover:text-red-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded-md"
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-md font-semibold">{item.name}</h3>
-                      <p className="text-sm text-gray-600">{item.selectedSize}</p>
-
-                      <div className="border border-gray-200 w-20 flex items-center mt-1">
-                        <button
-                          onClick={() =>
-                            updateCartItemQuantity(
-                              index,
-                              Math.max(1, item.quantity - 1)
-                            )
-                          }
-                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="text-lg font-medium w-10 text-center">
-                          {item.quantity.toString().padStart(2, "0")}
-                        </span>
-                        <button
-                          onClick={() =>
-                            updateCartItemQuantity(index, item.quantity + 1)
-                          }
-                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
-
-                      <p className="font-semibold mt-1">
-                        PKR {item.totalPrice.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="w-full bg-white shadow-inner p-6 border-t border-gray-200">
-                <div className="flex justify-between text-gray-700 font-medium">
-                  <span>Total</span>
-                  <span>
-                    PKR{" "}
-                    {cartItems
-                      .reduce((sum, item) => sum + item.totalPrice, 0)
-                      .toLocaleString()}
-                  </span>
-                </div>
-                <button
-                  onClick={handleProceedToCheckout}
-                  className="w-full bg-black text-white py-3 font-medium hover:bg-gray-800 transition mt-4"
-                >
-                  Proceed to Checkout
-                </button>
-              </div>
-            </div>
-          </>
-        )}
+        <AnimatePresence>
+          {showCartDrawer && (
+            <CartDrawer onClose={() => setShowCartDrawer(false)} />
+          )}
+        </AnimatePresence>
       </div>
       <Footer />
     </>

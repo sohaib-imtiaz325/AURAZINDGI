@@ -1,40 +1,23 @@
 // src/Components/LoginPage.jsx
 import React, { useState } from "react";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider, facebookProvider } from "./firebaseConfig";
+import { useNavigate } from "react-router-dom"; // ✅ React Router hook
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const navigate = useNavigate(); // ✅ to navigate to Dashboard after login
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Logged in as: ${formData.email}`);
-  };
 
-  // Google login
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      alert(`Welcome ${user.displayName || user.email}!`);
-    } catch (error) {
-      console.error(error);
-      alert("Google login failed");
-    }
-  };
-
-  // Facebook login
-  const handleFacebookLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, facebookProvider);
-      const user = result.user;
-      alert(`Welcome ${user.displayName || user.email}!`);
-    } catch (error) {
-      console.error(error);
-      alert("Facebook login failed");
+    // Basic check (you can replace with real auth)
+    if (formData.email && formData.password) {
+      alert(`Logged in as: ${formData.email}`);
+      navigate("/Dashboard"); // ✅ Redirect to Dashboard page
+    } else {
+      alert("Please enter both email and password.");
     }
   };
 
@@ -51,6 +34,7 @@ const LoginPage = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -70,6 +54,7 @@ const LoginPage = () => {
             />
           </div>
 
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -89,65 +74,14 @@ const LoginPage = () => {
             />
           </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2 text-gray-400">
-              <input type="checkbox" className="accent-yellow-500" />
-              Remember me
-            </label>
-            <a href="#" className="text-yellow-400 hover:underline">
-              Forgot password?
-            </a>
-          </div>
-
+          {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-yellow-500 text-black font-semibold py-2.5 rounded-lg hover:bg-yellow-400 transition-colors shadow-[0_0_10px_rgba(255,215,0,0.4)]"
           >
-            Sign In
+            Login
           </button>
         </form>
-
-        {/* Divider */}
-        <div className="flex items-center justify-center my-6">
-          <span className="h-px bg-yellow-500/30 w-1/4"></span>
-          <span className="text-gray-400 text-sm px-3">or continue with</span>
-          <span className="h-px bg-yellow-500/30 w-1/4"></span>
-        </div>
-
-        {/* Social Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={handleGoogleLogin}
-            className="flex-1 flex items-center justify-center gap-2 border border-yellow-500/30 py-2 rounded-lg bg-black/40 hover:bg-yellow-500/10 transition"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="google"
-              className="w-5 h-5"
-            />
-            <span className="text-gray-200">Google</span>
-          </button>
-
-          <button
-            onClick={handleFacebookLogin}
-            className="flex-1 flex items-center justify-center gap-2 border border-yellow-500/30 py-2 rounded-lg bg-black/40 hover:bg-yellow-500/10 transition"
-          >
-            <img
-              src="https://www.svgrepo.com/show/448224/facebook.svg"
-              alt="facebook"
-              className="w-5 h-5"
-            />
-            <span className="text-gray-200">Facebook</span>
-          </button>
-        </div>
-
-        {/* Footer */}
-        <p className="text-center text-sm text-gray-400 mt-8">
-          Don’t have an account?{" "}
-          <a href="#" className="text-yellow-400 font-medium hover:underline">
-            Create one
-          </a>
-        </p>
       </div>
     </div>
   );

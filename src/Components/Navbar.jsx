@@ -5,7 +5,7 @@ import { FaSearch, FaUser, FaShoppingBag } from "react-icons/fa";
 import { FiMenu, FiX, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import MiniNavbar from "./Mobilescreen/MiniNavbar";
-import CartDrawer from "./CartDrawer"; // ✅ Import your existing CartDrawer
+import CartDrawer from "./pages/NewCart";
 
 const Navbar = () => {
   const [isTop, setIsTop] = useState(true);
@@ -100,7 +100,7 @@ const Navbar = () => {
         {/* Center logo (desktop) */}
         <div className="absolute left-1/2 transform -translate-x-1/2 lg:flex hidden">
           <Link to="/" aria-label="Home">
-            <img src="/Images/weblogo3.png" alt="Logo" className="h-10 w-auto object-contain" />
+            <img src="/Images/weblogo3.webp" alt="Logo" className="h-10 w-auto object-contain" />
           </Link>
         </div>
 
@@ -132,17 +132,17 @@ const Navbar = () => {
           </button>
 
           {/* ✅ Cart Drawer Trigger */}
-         <Link to="/Cart">
-          <button
-            onClick={() => setShowCart(true)}
-            className="relative p-2 rounded-md"
-            aria-label="Cart"
-          >
-            <FaShoppingBag />
-            <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              {cartCount}
-            </span>
-          </button></Link>
+        <button
+  onClick={() => setShowCart(true)}  // Ye already hai
+  className="relative p-2 rounded-md"
+  aria-label="Cart"
+>
+  <FaShoppingBag />
+  <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">
+    {cartCount}
+  </span>
+</button>
+
         </div>
       </div>
 

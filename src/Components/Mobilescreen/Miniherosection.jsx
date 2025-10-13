@@ -286,7 +286,7 @@ const Miniherosection = () => {
           <div
             
           />
-          <img src="/Images/banner.png" className="w-full h-full" alt="" />
+          <img src="/Images/banner .webp" className="w-full h-full" alt="" />
         </div>
         <Footer />
       </div>

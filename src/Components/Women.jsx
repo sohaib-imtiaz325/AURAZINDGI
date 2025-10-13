@@ -85,7 +85,7 @@ export default function Womens() {
     <>
       <Navbar />
 
-      <div className="bg-gray-100 min-h-screen mt-20 flex justify-center py-6 px-3 sm:py-10 sm:px-6">
+      <div className=" min-h-screen mt-20 flex justify-center py-6 px-3 sm:py-10 sm:px-6">
         <div className="w-full max-w-7xl rounded-[3%] bg-white p-[10px]">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -131,7 +131,7 @@ export default function Womens() {
           </div>
 
           {/* Product Cards Grid */}
-          <div className="grid grid-cols-2 rounded-4xl p-8 md:grid-cols-4 gap-4 px-3 sm:gap-4">
+          <div className="grid grid-cols-2 rounded-4xl  md:grid-cols-4 gap-4  sm:gap-4">
             {sortedProducts.map((p) => (
               <div
                 key={p.id}
