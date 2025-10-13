@@ -15,7 +15,6 @@ import CartDrawer from './Components/pages/NewCart';
 // 🧩 Admin Dashboard Layout + Pages
 import Layout from './Components/pages/Layoutsidebar';
 import Dashboard from './Components/pages/Dashboard';
-import Products from './Components/pages/Products/Products';
 import Collections from './Components/pages/Products/Collections';
 import Inventory from './Components/pages/Products/Inventory';
 import Received from './Components/pages/Orders/Received';
@@ -27,6 +26,7 @@ import DeskHomePage from './Components/desktop/home/DeskHomePage';
 // ✅ Add Product Page (Without Sidebar)
 import AddProduct from './Components/pages/products/AddProduct';
 import Orders from './Components/pages/Orders/Orders';
+import Products from './Components/pages/Products/Products';
 
 const App = () => {
   return (
